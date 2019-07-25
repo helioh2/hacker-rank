@@ -3,9 +3,71 @@ package priority_queue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-/*
- * Create the Student and Priorities classes here.
- */
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+
+class Student {
+
+    private int id;
+    private String name;
+    private double cgpa;
+        
+    public Student(int id, String name, double cgpa) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.cgpa = cgpa;
+    }
+    
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public double getCgpa() {
+        return cgpa;
+    }
+    
+}
+
+class Priorities {
+
+    public List<Student> getStudents(List<String> events) {
+        
+        PriorityQueue<Student> queue = new PriorityQueue<>(
+                Comparator.comparing(Student::getCgpa).reversed()
+                .thenComparing(Student::getName)
+                .thenComparing(Student::getId)
+                );
+        
+        for (String event: events) {
+            if (event.equals("SERVED") && !queue.isEmpty()) {
+                queue.remove();
+            } else {
+                String[] eventSplitted = event.split(" ");
+                if (eventSplitted[0].equals("ENTER")) {
+                    Student newStudent = new Student(
+                            Integer.parseInt(eventSplitted[3]), 
+                            eventSplitted[1],
+                            Double.parseDouble(eventSplitted[2])
+                            );
+                    queue.add(newStudent);
+                }
+            }
+        }
+        
+        List<Student> remainingStudents = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+        	remainingStudents.add(queue.poll());
+        }
+        
+        return remainingStudents;
+    }
+
+}
 
 
 public class Solution {
